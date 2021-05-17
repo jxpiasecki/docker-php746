@@ -1,0 +1,33 @@
+version: '3'
+services:
+  app:
+    container_name: laravel_app
+    build:
+      context: .docker
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - VIRTUAL_HOST=laravel.localhost
+    networks:
+      - laravelnetwork
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+  db:
+    container_name: laravel_mysql
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - .data/mysql:/var/lib/mysql
+    networks:
+      - laravelnetwork
+
+networks:
+  laravelnetwork:
+    external: true

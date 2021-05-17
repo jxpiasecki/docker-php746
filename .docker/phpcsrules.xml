@@ -1,0 +1,63 @@
+<ruleset name="default">
+    <exclude-pattern>*/database/*</exclude-pattern>
+    <exclude-pattern>*/resources/lang/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <rule ref="PEAR">
+        <exclude name="PEAR.Commenting.ClassComment.Missing"/>
+        <exclude name="PEAR.Commenting.FileComment.Missing"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="PEAR.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <exclude name="PEAR.NamingConventions.ValidFunctionName.PrivateNoUnderscore"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
+    <rule ref="PSR1"/>
+    <rule ref="PSR2">
+        <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
+    </rule>
+    <rule ref="Squiz">
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Generic.Commenting.DocComment.NonParamGroup"/>
+        <exclude name="Generic.Commenting.DocComment.TagValueIndent"/>
+        <exclude name="Generic.Formatting.SpaceAfterCast.NoSpace"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned"/>
+        <exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
+        <exclude name="Squiz.Commenting.FileComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName"/>
+        <exclude name="Squiz.Commenting.FunctionComment.InvalidTypeHint"/>
+        <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <exclude name="Squiz.Files.FileExtension.ClassFound"/>
+        <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+        <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned"/>
+        <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
+        <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+        <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
+        <exclude name="Squiz.PHP.DisallowBooleanStatement.Found"/>
+        <exclude name="Squiz.PHP.DisallowInlineIf.Found"/>
+        <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
+        <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/>
+        <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before"/>
+        <exclude name="Generic.Strings.UnnecessaryStringConcat"/>
+    </rule>
+    <rule ref="Squiz.Functions.FunctionDeclarationArgumentSpacing">
+        <properties>
+            <property name="equalsSpacing" value="1"/>
+        </properties>
+    </rule>
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+        <property name="spacing" value="1"/>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacing" value="1"/>
+            <property name="spacingBeforeFirst" value="1"/>
+            <property name="spacingAfterLast" value="1"/>
+        </properties>
+    </rule>
+</ruleset>
+
