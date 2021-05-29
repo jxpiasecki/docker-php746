@@ -18,11 +18,23 @@ RUN a2enmod headers
 RUN a2enmod rewrite
 RUN a2enmod ssl
 
+#Install Composer.phar
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php && \
     php -r "unlink('composer-setup.php');" && \
     chmod +x composer.phar && \
     mv composer.phar /usr/local/bin/composer
+
+# Install Node.js - uncomment your target version
+#RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+#RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+#RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+RUN echo "NODE Version:" && node --version
+RUN echo "NPM Version:" && npm --version
+RUN npm i -g nodemon
+RUN echo "NODEMON Version:" && nodemon --version
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
