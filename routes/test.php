@@ -7,6 +7,7 @@ use App\Services\Jp\Facades\Jp as JpFacade;
 use App\Services\Jp\Facades\Jp as JpFacadeRealTimeFacade;
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +27,7 @@ Route::get('/test', function (
 
     dump($jp::run(), JpFacadeRealTimeFacade::run());
 
-    Cache::get('okokok');
+    dd(Config::get('app.locale'), env('JP_CLIENT_PASSWORD'), App::environment(['dev', 'local']));
 
     return dd('---');
 });
