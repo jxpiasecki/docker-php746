@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
 Route::get('/test', function (
     Request $request,
@@ -19,6 +21,8 @@ Route::get('/test', function (
     JpFacade $jp,
     ClientWithoutProvider $clientWithoutProvider
 ) {
+
+
     dump($request);
 
     /* @var JpClient $jpClientDynamic */
@@ -27,9 +31,23 @@ Route::get('/test', function (
 
     dump($jp::run(), JpFacadeRealTimeFacade::run());
 
-    dd(Config::get('app.locale'), env('JP_CLIENT_PASSWORD'), App::environment(['dev', 'local']));
+    //dd(Config::get('app.locale'), env('JP_CLIENT_PASSWORD'), App::environment(['dev', 'local']));
 
+    return Response::view('testing', ['name' => 'ty szczurze!!!']);
+    return View::make('testing', ['name' => 'ty szczurze!!!']);
     return dd('---');
+
+    return response()->download(base_path('/storage/app/public/images/fox.png'));
+    return response()->streamDownload(
+        function () {
+            echo 'this is content';
+        },
+        'laravel-readme.md'
+    );
+    return response()->file(base_path('/storage/app/public/images/fox.png'));
+
+    return Response::jsonp('ssss', ['name' => 'Abigail', 'state' => 'CA']);
+
 });
 
 Route::get('/user', function (Request $request) {
