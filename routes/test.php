@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
 Route::get('/test', function (
@@ -50,6 +51,22 @@ Route::get('/test', function (
 
 });
 
+Route::get('/unsubscribe', function (Request $request) {
+    if(!$request->query->get('signature')){
+        dump('no signature');
+    }
+
+    if ($request->hasValidSignature()) {
+        dump('Url valid');
+    }
+    else{
+        dump('Url invalid');
+    }
+
+    return URL::signedRoute('unsubscribe', ['user' => 1]);
+})->name('unsubscribe');
+
+
 Route::get('/user', function (Request $request) {
     echo 'user';
 });
@@ -65,14 +82,14 @@ Route::get('/user/{id}', function ($id) {
 Route::redirect('/here', '/test', 301);
 
 Route::middleware(SetDefaultLocaleForUrls::class)
-->get(
-    '/{locale?}/posts',
-    function ($locale = null) {
-        $locale = ($locale === null) ? Config::get('app.locale') : $locale;
-        dd('This is posts with locale: ' . $locale);
-    }
-)
-->name('post.index');
+    ->get(
+        '/{locale?}/posts',
+        function ($locale = null) {
+            $locale = ($locale === null) ? Config::get('app.locale') : $locale;
+            dd('This is posts with locale: ' . $locale);
+        }
+    )
+    ->name('post.index');
 
 
 

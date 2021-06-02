@@ -181,4 +181,83 @@ View composer/creator
         $view->with('count', 99);
     });
 ```
+Url. Signed url
+---
+```
+    // Create
+    return URL::signedRoute('unsubscribe', ['user' => 1]);
+    
+    // Check signature
+    if(!$request->query->get('signature')){
+        dump('no signature');
+    }
 
+    if ($request->hasValidSignature()) {
+        dump('Url valid');
+    }
+    else{
+        dump('Url invalid');
+    }
+```
+Session. Create custom Session driver
+---
+```
+    1. Create handler: MongoSessionHandler
+    2. Create provider: SessionServiceProvider with extend() method in provider boot()
+    3. Change handler in ```config/session.php``` to 'mongo'
+```
+Validation.Rules
+---
+```
+    $request->validate([
+        'title' => 'bail|required|unique:posts|max:255', // bail - do not check all when first fail 
+        'author.name' => 'required',                     // nested, when array used
+        'author\.description' => 'required',             // when dot sign is used in name
+        'publish_at' => 'nullable|date',                 // optional input, nullable when not provided
+    ]);
+```
+
+Validation.Form Request Validation
+---
+```
+    1. Create Form Request
+        php artisan make:request StorePostRequest
+    2. Define authorize() and rules() method
+    3. Type-hint request param in your controller action method.
+        public function store(StorePostRequest $request)
+        {
+            // Retrieve the validated input data
+            $data = $request->validated();
+            
+            // Save
+            /* @var Post $post */
+            $post = Post::create();
+            $post->fill($data);
+            $post->save();
+        }
+```
+
+Validation. Custom validation rules. 
+---
+```
+    1. Run: php artisan make:rule Uppercase
+    2. Define class passes() and messages() methods in app/Rules
+    3. Add rule to validation via array creating new instance operator
+        $request->validate([
+            'name' => ['required', 'string', new Uppercase],
+        ]);
+        
+    OR use closure (when validation rules used once)
+        
+    $validator = Validator::make($request->all(), [
+        'title' => [
+            'required',
+            'max:255',
+            function ($attribute, $value, $fail) {
+                if ($value === 'foo') {
+                    $fail('The '.$attribute.' is invalid.');
+                }
+            },
+        ],
+    ]);
+```
