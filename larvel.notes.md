@@ -11,10 +11,14 @@ React version
     php artisan migrate
 ```
 
-Get all configs/templates etc from vendors
+Get all: configs/templates, classes stubs, docker files from: vendor, packages, etc.
+---
+It's generally safe to execute.
 ---
 ```
     php artisan vendor:publish --all
+    php artisan stub:publish
+    php artisan sail:publish
 ```
 
 Useful syntax to check global variables (config can use env)
