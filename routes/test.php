@@ -33,7 +33,7 @@ Route::get('/test', function (
     dump($jp::run(), JpFacadeRealTimeFacade::run());
 
     //dd(Config::get('app.locale'), env('JP_CLIENT_PASSWORD'), App::environment(['dev', 'local']));
-
+throw new \http\Exception\BadConversionException('aha');
     return Response::view('testing', ['name' => 'ty szczurze!!!']);
     return View::make('testing', ['name' => 'ty szczurze!!!']);
     return dd('---');

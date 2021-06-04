@@ -261,3 +261,24 @@ Validation. Custom validation rules.
         ],
     ]);
 ```
+
+Logging. The ```single``` and ```daily``` channels have optional options: permission.
+---
+Preventing log permission errors.
+---
+```
+       'single' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'permission' => 0666,
+        ],
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+            'permission' => 0666,
+        ],
+```
