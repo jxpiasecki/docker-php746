@@ -1,3 +1,9 @@
+Pominiete:
+---
+https://laravel.com/docs/8.x/broadcasting
+https://laravel.com/docs/8.x/helpers
+
+
 Install default starting point with users and auth
 ---
 Web version
@@ -398,4 +404,41 @@ Events. How events work.
     EventServiceProvider::class         // $listeners => Match event with listeners
                                         // $subscribers => Listen for events and handle via event type
     Listener::handle();                 // Handle event by listener
+```
+Storage. Tempurary url.
+---
+```
+    use Illuminate\Support\Facades\Storage;
+    
+    $url = Storage::temporaryUrl(
+        'file.jpg', now()->addMinutes(5)
+    );
+```
+Storage. Storing uploaded files.
+---
+```
+Note that we only specified a directory name and not a filename. 
+By default, the putFile method will generate a unique ID to serve as the filename. 
+The file's extension will be determined by examining the file's MIME type.
+The path to the file will be returned by the putFile method so you can store the path, including the generated filename, in your database.
+The putFile and putFileAs methods also accept an argument to specify the "visibility" of the stored file.
+
+    use Illuminate\Http\File;
+    use Illuminate\Support\Facades\Storage;
+    
+    // Automatically generate a unique ID for filename...
+    $path = Storage::putFile('photos', new File('/path/to/photo'), 'public');
+    
+    // Manually specify a filename...
+    $path = Storage::putFileAs('photos', new File('/path/to/photo'), 'photo.jpg');
+    
+    // We
+    $path = $request->file('avatar')->store('avatars');
+    $path = $request->file('avatar')->storeAs(
+        'avatars', $request->user()->id
+    );
+    $path = Storage::putFile('avatars', $request->file('avatar'));
+    $path = Storage::putFileAs(
+        'avatars', $request->file('avatar'), $request->user()->id
+    );
 ```

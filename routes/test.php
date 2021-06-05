@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
@@ -28,8 +29,23 @@ Route::get('/test', function (
     PodcastProcessed $podcastProcessedEvent
 ) {
 
+    // Http
+        $response = Http::get('https://www.onet.pl/');
+//    dump($response->body());
+
+
+//    dd($response->body(), Http::dd()->get('http://wp.pl'));
+//    $response = Http::post('http://example.com/users', [
+//        'name' => 'Steve',
+//        'role' => 'Network Administrator',
+//    ]);
+//    Http::dd()->get('http://wp.pl');
+
+
+    // Events
     $sessionId = $request->getSession()->getId();
     $session = Session::find($sessionId)->first();
+    dd($sessionId, $session);
     $podcastProcessedEvent->session = $session;
     Log::info( __FILE__.'::'.__FUNCTION__ . '()' . ' Event dispatched: PodcastProcessed');
     Event::dispatch($podcastProcessedEvent);

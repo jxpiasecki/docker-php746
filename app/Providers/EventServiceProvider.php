@@ -22,7 +22,16 @@ class EventServiceProvider extends ServiceProvider
         ],
         PodcastProcessed::class => [
             SendPodcastNotification::class,
-        ]
+        ],
+
+        'Illuminate\Http\Client\Events\RequestSending' => [
+            'App\Listeners\LogRequestSending'
+        ],
+
+        'Illuminate\Http\Client\Events\ResponseReceived' => [
+            'App\Listeners\LogResponseReceived',
+        ],
+
     ];
 
     /**

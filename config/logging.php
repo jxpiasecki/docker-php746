@@ -102,6 +102,13 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'http' => [
+            'driver' => 'daily',
+            'pattern' => storage_path('logs/http/http.log'),
+            'path' => storage_path('logs/http/http.log'),
+            'permission' => 0666,
+        ],
     ],
 
 ];
