@@ -391,3 +391,11 @@ https://www.php.net/manual/en/functions.arrow.php
 
     var_export($fn1(3)); // 4
 ```
+Events. How events work.
+---
+```
+    Event::dispatcher(new Event());     // Dispatch event
+    EventServiceProvider::class         // $listeners => Match event with listeners
+                                        // $subscribers => Listen for events and handle via event type
+    Listener::handle();                 // Handle event by listener
+```

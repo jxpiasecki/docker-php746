@@ -1,6 +1,8 @@
 <?php
 
+use App\Events\PodcastProcessed;
 use App\Http\Middleware\SetDefaultLocaleForUrls;
+use App\Models\Session;
 use App\Services\Jp\Client as JpClient;
 use App\Services\Jp\ClientWithoutProvider;
 use App\Services\Jp\Facades\Jp as JpFacade;
@@ -10,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -20,11 +24,17 @@ Route::get('/test', function (
     JpClient $jpClient,
     Container $container,
     JpFacade $jp,
-    ClientWithoutProvider $clientWithoutProvider
+    ClientWithoutProvider $clientWithoutProvider,
+    PodcastProcessed $podcastProcessedEvent
 ) {
 
+    $sessionId = $request->getSession()->getId();
+    $session = Session::find($sessionId)->first();
+    $podcastProcessedEvent->session = $session;
+    Log::info( __FILE__.'::'.__FUNCTION__ . '()' . ' Event dispatched: PodcastProcessed');
+    Event::dispatch($podcastProcessedEvent);
 
-    dump($request);
+    dd(__METHOD__);
 
     /* @var JpClient $jpClientDynamic */
     $jpClientDynamic = $container->get(JpClient::class);
@@ -40,11 +50,10 @@ Route::get('/test', function (
     ]);
 
     $sorted = $collection->sortBy([
-        fn ($a, $b) => $a['name'] <=> $b['name'],
-        fn ($a, $b) => $b['age'] <=> $a['age'],
+        fn($a, $b) => $a['name'] <=> $b['name'],
+        fn($a, $b) => $b['age'] <=> $a['age'],
     ]);
     dd($sorted);
-
 
 
     dd(
@@ -74,7 +83,7 @@ Route::get('/test', function (
     dd($intersect->all());
 
     //dd(Config::get('app.locale'), env('JP_CLIENT_PASSWORD'), App::environment(['dev', 'local']));
-throw new \http\Exception\BadConversionException('aha');
+    throw new \http\Exception\BadConversionException('aha');
     return Response::view('testing', ['name' => 'ty szczurze!!!']);
     return View::make('testing', ['name' => 'ty szczurze!!!']);
     return dd('---');
@@ -93,14 +102,13 @@ throw new \http\Exception\BadConversionException('aha');
 });
 
 Route::get('/unsubscribe', function (Request $request) {
-    if(!$request->query->get('signature')){
+    if (!$request->query->get('signature')) {
         dump('no signature');
     }
 
     if ($request->hasValidSignature()) {
         dump('Url valid');
-    }
-    else{
+    } else {
         dump('Url invalid');
     }
 
