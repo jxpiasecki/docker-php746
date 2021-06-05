@@ -405,7 +405,7 @@ Events. How events work.
                                         // $subscribers => Listen for events and handle via event type
     Listener::handle();                 // Handle event by listener
 ```
-Storage. Tempurary url.
+Storage. temporary url.
 ---
 ```
     use Illuminate\Support\Facades\Storage;
@@ -441,4 +441,42 @@ The putFile and putFileAs methods also accept an argument to specify the "visibi
     $path = Storage::putFileAs(
         'avatars', $request->file('avatar'), $request->user()->id
     );
+```
+Logging. Logging to own log file.
+---
+```
+step1: create a channel inside the config/logging.php file
+    'http' => [
+        'driver' => 'daily',
+        'pattern' => storage_path('logs/http/http.log'),
+        'path' => storage_path('logs/http/http.log'),
+        'permission' => 0666,
+    ],
+step2: Create dynamic path to log file and override existing
+    // Single log - Every request other log file.
+    //        Config::set('logging.channels.http.driver', 'single');
+    //        $logPathPattern = Config::get('logging.channels.http.pattern');
+    //        $logPathPattern = Str::replace('http.log', 'http-'.Carbon::now()->toDateTimeString().'.log', $logPathPattern);
+    //        Config::set('logging.channels.http.path', $logPathPattern);
+
+    // Daily log.
+        Log::channel('http')->info('Http REQUEST listener handle => ' . __METHOD__ . '()', json_decode(json_encode($event), true));
+step 3: Create dynamic log channel via Monolog logger
+    // Create a log channel.
+    $log = new Logger('http2'); // Move to service container
+    $logFile = storage_path('logs/http/http2-' . Carbon::now()->toDateString() . '.log');
+    $log->pushHandler(new StreamHandler($logFile));
+    $log->warning('Http REQUEST listener handle => ' . __METHOD__ . '()', json_decode(json_encode($event), true));
+```
+Localization.
+---
+```
+    $locale = 'pl';
+    App::setLocale($locale);
+    $locale = App::currentLocale();
+    if (App::isLocale('en')) { ... }
+    
+    # Pluralization
+    'apples' => 'There is one apple|There are many apples',
+    echo trans_choice('apples', 2);
 ```
