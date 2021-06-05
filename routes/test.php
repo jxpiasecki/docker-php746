@@ -32,6 +32,47 @@ Route::get('/test', function (
 
     dump($jp::run(), JpFacadeRealTimeFacade::run());
 
+    $collection = collect([
+        ['name' => 'Taylor Otwell', 'age' => 34],
+        ['name' => 'Abigail Otwell', 'age' => 30],
+        ['name' => 'Taylor Otwell', 'age' => 36],
+        ['name' => 'Abigail Otwell', 'age' => 32],
+    ]);
+
+    $sorted = $collection->sortBy([
+        fn ($a, $b) => $a['name'] <=> $b['name'],
+        fn ($a, $b) => $b['age'] <=> $a['age'],
+    ]);
+    dd($sorted);
+
+
+
+    dd(
+        collect([2, 4, 6, 8])->search(function ($item, $key) {
+            dump($item);
+            return $item > 5;
+        })
+    );
+
+    $collection = collect(['a', 'b', 'c', 'd', 'e', 'f']);
+    $r = $collection->nth(4, 3);
+    dd($r);
+
+    $collection = collect([
+        ['account_id' => 'account-x10', 'product' => 'Chair'],
+        ['account_id' => 'account-x10', 'product' => 'Bookcase'],
+        ['account_id' => 'account-x11', 'product' => 'Desk'],
+    ]);
+    $grouped = $collection->groupBy('account_id');
+    $keyed = $collection->keyBy('account_id');
+    dd($grouped, $keyed);
+
+
+    dump(collect(['a', 'b', 'c'])->join(', ', ', and '));
+    $collection = collect(['Desk', 'Sofa', 'Chair']);
+    $intersect = $collection->intersect(['Desk', 'Chair', 'Bookcase']);
+    dd($intersect->all());
+
     //dd(Config::get('app.locale'), env('JP_CLIENT_PASSWORD'), App::environment(['dev', 'local']));
 throw new \http\Exception\BadConversionException('aha');
     return Response::view('testing', ['name' => 'ty szczurze!!!']);

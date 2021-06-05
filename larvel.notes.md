@@ -286,3 +286,108 @@ Preventing log permission errors.
             'permission' => 0666,
         ],
 ```
+Cache. Smart cache remember, get existing cached value or when doesn't exist make action to set cache
+---
+```
+    // 
+    $value = Cache::remember('users', $seconds, function () {
+        return DB::table('users')->get();
+    });
+    // Remember forever
+    $value = Cache::rememberForever('users', function () {
+        return DB::table('users')->get();
+    });
+```
+Collections. 
+---
+groupBy() - use Collection, list all items as numerable keys
+---
+keyBy() - use array, list only last items for given keys (like in normal array values with the same key override by last)
+---
+```
+    $collection = collect([
+        ['account_id' => 'account-x10', 'product' => 'Chair'],
+        ['account_id' => 'account-x10', 'product' => 'Bookcase'],
+        ['account_id' => 'account-x11', 'product' => 'Desk'],
+    ]);
+    $grouped = $collection->groupBy('account_id');
+    $keyed = $collection->keyBy('account_id');
+```
+```
+    |--------------------------------------------------------------------------
+    | DUMP. groupBy
+    |--------------------------------------------------------------------------
+    Illuminate\Support\Collection {#366 ▼
+      #items: array:2 [▼
+        "account-x10" => Illuminate\Support\Collection {#341 ▼
+          #items: array:2 [▼
+            0 => array:2 [▼
+              "account_id" => "account-x10"
+              "product" => "Chair"
+            ]
+            1 => array:2 [▼
+              "account_id" => "account-x10"
+              "product" => "Bookcase"
+            ]
+          ]
+        }
+        "account-x11" => Illuminate\Support\Collection {#432 ▼
+          #items: array:1 [▼
+            0 => array:2 [▼
+              "account_id" => "account-x11"
+              "product" => "Desk"
+            ]
+          ]
+        }
+      ]
+    }
+    
+    |--------------------------------------------------------------------------
+    | DUMP. keyBy
+    |--------------------------------------------------------------------------
+    Illuminate\Support\Collection {#362 ▼
+      #items: array:2 [▼
+        "account-x10" => array:2 [▼
+          "account_id" => "account-x10"
+          "product" => "Bookcase"
+        ]
+        "account-x11" => array:2 [▼
+          "account_id" => "account-x11"
+          "product" => "Desk"
+        ]
+      ]
+    }
+```
+Lazy Collections. Used to loop over big data without less using memory (yield).
+---
+https://www.php.net/manual/en/language.generators.overview.php
+---
+```
+    use Illuminate\Support\LazyCollection;
+    
+    LazyCollection::make(function () {
+        $handle = fopen('log.txt', 'r');
+    
+        while (($line = fgets($handle)) !== false) {
+            yield $line;
+        }
+        
+        fclose($handle);
+    });
+```
+Arrow Functions. Just like in JS.
+---
+https://www.php.net/manual/en/functions.arrow.php
+---
+```
+    $y = 1;
+ 
+    $fn1 = fn($x) => $x + $y;
+    
+    // equivalent to using $y by value:
+    $fn2 = function ($x) use ($y) {
+        return $x + $y;
+    };
+
+    var_export($fn1(3)); // 4
+```
