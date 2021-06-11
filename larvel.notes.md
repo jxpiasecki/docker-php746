@@ -36,6 +36,13 @@ Useful syntax to check global variables (config can use env)
 
 ```
 
+Service Container. Get facade from service container.
+---
+```
+    $logger = App::get('log');
+    $logger = App::make('log');
+```
+
 Routes. Resolve model and dependency injection using column other than id(primary key)
 ---
 ```

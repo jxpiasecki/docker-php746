@@ -2,6 +2,7 @@
 
 use App\Events\PodcastProcessed;
 use App\Http\Middleware\SetDefaultLocaleForUrls;
+use App\Mail\OrderShipped;
 use App\Models\Session;
 use App\Services\Jp\Client as JpClient;
 use App\Services\Jp\ClientWithoutProvider;
@@ -15,10 +16,16 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
+
+Route::get('/mailable', function () {
+    $text = 'this is the beginning';
+    return new OrderShipped($text);
+});
 
 Route::get('/test', function (
     Request $request,
@@ -28,6 +35,8 @@ Route::get('/test', function (
     ClientWithoutProvider $clientWithoutProvider,
     PodcastProcessed $podcastProcessedEvent
 ) {
+
+    Mail::to('janusz.szymanski1@mailinator.com')->send(new OrderShipped('some random text'));
 
     // Http
         $response = Http::get('https://www.onet.pl/');

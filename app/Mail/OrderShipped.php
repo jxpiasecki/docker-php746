@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+
+class OrderShipped extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    /**
+     * @var string
+     */
+    private $text;
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct(string $text)
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        //return $this->view('view.name');
+        return $this->from('janusz.szymanski1@mailinator.com')
+            ->view('emails.orders.shipped')
+            ->with(['text' => $this->text])
+            ->subject('Hue hue');
+    }
+}
