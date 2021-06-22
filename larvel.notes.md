@@ -487,3 +487,45 @@ Localization.
     'apples' => 'There is one apple|There are many apples',
     echo trans_choice('apples', 2);
 ```
+Mailable(long messages).
+---
+```
+    ~ php artisan make:mail OrderShipped
+
+    Route::get('/mailable', function () {
+        $text = 'this is the beginning';
+        $orderShippedMail = new OrderShipped($text);
+    
+        // Sending Mail
+        Mail::to('janusz.szymanski@mailinator.com')->send($orderShippedMail);
+        // Queue Mail
+        Mail::to('janusz.szymanski@mailinator.com')->queue($orderShippedMail);
+    
+        return $orderShippedMail;
+    });
+```
+
+Notifiable(short messages).
+---
+```
+    ~ php artisan make:notification InvoicePaid
+    
+    Route::get('/notifiable', function () {
+        /* @var User $user */
+        $user = Auth::user() ? Auth::user() : User::first();
+    
+        $text = 'THIS IS INPUT TEXT';
+        $invoicePaidNotification = new InvoicePaid($text);
+    
+        // 1. Notify by user model using trait Notifiable
+        $user->notify($invoicePaidNotification);
+        // 2. Notify by user model using facade Notification
+        Notification::send($user, $invoicePaidNotification);
+        // 3. Notify ad hoc on demand (without user model)
+        Notification::route('mail', 'janusz.szymanski@mailinator.com')
+            ->notify($invoicePaidNotification);
+    
+        return $invoicePaidNotification->toMail($user);
+    });
+    
+```

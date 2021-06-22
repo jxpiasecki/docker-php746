@@ -4,27 +4,60 @@ use App\Events\PodcastProcessed;
 use App\Http\Middleware\SetDefaultLocaleForUrls;
 use App\Mail\OrderShipped;
 use App\Models\Session;
+use App\Notifications\InvoicePaid;
 use App\Services\Jp\Client as JpClient;
 use App\Services\Jp\ClientWithoutProvider;
 use App\Services\Jp\Facades\Jp as JpFacade;
 use App\Services\Jp\Facades\Jp as JpFacadeRealTimeFacade;
 use Illuminate\Container\Container;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
+Route::get('/notifiable', function () {
+    /* @var User $user */
+    $user = Auth::user() ? Auth::user() : User::find(rand(1,2));
+    dump($user->notifications->toArray());
+
+    $text = 'THIS IS INPUT TEXT';
+    $invoicePaidNotification = new InvoicePaid($text);
+
+    // 1. Notify by user model using trait Notifiable
+    $invoicePaidNotification->text = 'AAA';
+    $user->notify($invoicePaidNotification);
+    // 2. Notify by user model using facade Notification
+    $invoicePaidNotification->text = 'BBB';
+    Notification::send($user, $invoicePaidNotification);
+    // 3. Notify ad hoc on demand (without user model)
+    $invoicePaidNotification->text = 'CCC';
+    Notification::route('mail', 'janusz.szymanski@mailinator.com')
+        ->notify($invoicePaidNotification);
+
+    return $invoicePaidNotification->toMail($user);
+});
+
 Route::get('/mailable', function () {
     $text = 'this is the beginning';
-    return new OrderShipped($text);
+    $orderShippedMail = new OrderShipped($text);
+
+    // Sending Mail
+    Mail::to('janusz.szymanski@mailinator.com')->send($orderShippedMail);
+    // Queue Mail
+    Mail::to('janusz.szymanski@mailinator.com')->queue($orderShippedMail);
+
+    return $orderShippedMail;
 });
 
 Route::get('/test', function (
@@ -39,7 +72,7 @@ Route::get('/test', function (
     Mail::to('janusz.szymanski1@mailinator.com')->send(new OrderShipped('some random text'));
 
     // Http
-        $response = Http::get('https://www.onet.pl/');
+    $response = Http::get('https://www.onet.pl/');
 //    dump($response->body());
 
 
@@ -56,7 +89,7 @@ Route::get('/test', function (
     $session = Session::find($sessionId)->first();
     dd($sessionId, $session);
     $podcastProcessedEvent->session = $session;
-    Log::info( __FILE__.'::'.__FUNCTION__ . '()' . ' Event dispatched: PodcastProcessed');
+    Log::info(__FILE__ . '::' . __FUNCTION__ . '()' . ' Event dispatched: PodcastProcessed');
     Event::dispatch($podcastProcessedEvent);
 
     dd(__METHOD__);
