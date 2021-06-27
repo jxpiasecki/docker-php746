@@ -4,6 +4,8 @@ FROM php:7.4.6-apache
 RUN apt-get update && apt-get install -y && \
     apt-get install -y vim git zip unzip libpq-dev libxml2-dev zlib1g-dev libzip-dev mariadb-client libjpeg-dev libpng-dev
 
+RUN apt-get install php-dom
+
 RUN apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 RUN printf "\n" | pecl install imagick
 
