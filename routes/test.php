@@ -2,6 +2,7 @@
 
 use App\Events\PodcastProcessed;
 use App\Http\Middleware\SetDefaultLocaleForUrls;
+use App\Jobs\ProcessPodcast;
 use App\Mail\OrderShipped;
 use App\Models\Session;
 use App\Notifications\InvoicePaid;
@@ -14,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
@@ -25,6 +27,28 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
+
+Route::get('/queue', function () {
+    /* @var User $user */
+    $user = Auth::user() ? Auth::user() : User::find(rand(1,2));
+    $isActiveUser = true;
+    $isNotActiveUser = false;
+
+    ProcessPodcast::dispatch($user); // Add to job queue
+    ProcessPodcast::dispatchIf($isActiveUser, $user); // Add to job queue if first param is true
+    ProcessPodcast::dispatchUnless($isNotActiveUser, $user); // Add to job queue if first param is false
+    ProcessPodcast::dispatchSync($user); // Execute immediately
+    ProcessPodcast::dispatchAfterResponse($user); // Executes after last echo
+
+    /// Add to job queue chain jobs
+    Bus::chain([
+        new ProcessPodcast($user),
+        new ProcessPodcast($user),
+        new ProcessPodcast($user),
+    ])->dispatch();
+
+    echo '==============over';
+});
 
 Route::get('/notifiable', function () {
     /* @var User $user */

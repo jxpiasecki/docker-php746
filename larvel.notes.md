@@ -6,11 +6,11 @@ https://laravel.com/docs/8.x/helpers
 
 Install default starting point with users and auth
 ---
-Web version
+Starter kit (Web version)
 ```
     php artisan breeze:install
 ```
-React version
+Starter kit (React version)
 ``` 
     php artisan breeze:install react
     npm install && npm run dev
@@ -528,4 +528,45 @@ Notifiable(short messages).
         return $invoicePaidNotification->toMail($user);
     });
     
+```
+
+Queue. Jobs
+---
+    ProcessPodcast::dispatch($user); // Add to job queue
+    ProcessPodcast::dispatchIf($isActiveUser, $user); // Add to job queue if first param is true
+    ProcessPodcast::dispatchUnless($isNotActiveUser, $user); // Add to job queue if first param is false
+    ProcessPodcast::dispatchSync($user); // Execute immediately
+    ProcessPodcast::dispatchAfterResponse($user); // Executes after last echo
+
+    /// Add to job queue chain jobs
+    Bus::chain([
+        new ProcessPodcast($user),
+        new ProcessPodcast($user),
+        new ProcessPodcast($user),
+    ])->dispatch();
+
+Authentication, Guards, Providers
+---
+    - Guards define how users are authenticated for each request. (how authenticate user)
+    - Providers define how users are retrieved from your storage. (how provide user data)
+    - Guards and providers should not be confused with "roles" and "permissions".
+
+Authenticated user
+---
+```
+    use Illuminate\Support\Facades\Auth;
+    
+    // Retrieve the currently authenticated user...
+    $user = Auth::user();
+    // Retrieve the currently authenticated user's ID...
+    $id = Auth::id();
+    // Request user
+    public function update(Request $request)
+    {
+        $request->user()
+    }
+    // The user is logged in...
+    if (Auth::check()) {
+        // The user is logged in...
+    }
 ```
