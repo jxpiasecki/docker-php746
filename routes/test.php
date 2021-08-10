@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\PodcastProcessed;
+use App\Helpers\EloquentBuilder;
 use App\Http\Middleware\SetDefaultLocaleForUrls;
 use App\Jobs\ProcessPodcast;
 use App\Mail\OrderShipped;
@@ -13,11 +14,14 @@ use App\Services\Jp\Facades\Jp as JpFacadeRealTimeFacade;
 use Illuminate\Container\Container;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -28,9 +32,34 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
+Route::get('db', function (Request $request) {
+//    $r = DB::table('sessions')->get();
+//    $r = DB::table('sessions')->first();
+//    $r = DB::table('sessions')->pluck('payload', 'id');
+//    var_dump($r);
+//    dump($r);
+//
+//    DB::table('sessions')->orderBy('id')->chunk(2, function ($results, $page) {
+//        dump($results, $page);
+//    });
+
+    $query = DB::table('sessions')->where('id' , '<>', '0');
+    $items = $query->get();
+    var_dump($query->paginate());
+    dump($query->paginate());
+    dump($query->paginate()->toJson());
+
+    $paginator = new LengthAwarePaginator($items, $items->count(), 15, Paginator::resolveCurrentPage(), ['path' => Paginator::resolveCurrentPath()]);
+    var_dump($paginator);
+    dump($paginator);
+    dump($paginator->toJson());
+
+    die;
+});
+
 Route::get('/queue', function () {
     /* @var User $user */
-    $user = Auth::user() ? Auth::user() : User::find(rand(1,2));
+    $user = Auth::user() ? Auth::user() : User::find(rand(1, 2));
     $isActiveUser = true;
     $isNotActiveUser = false;
 
@@ -52,7 +81,7 @@ Route::get('/queue', function () {
 
 Route::get('/notifiable', function () {
     /* @var User $user */
-    $user = Auth::user() ? Auth::user() : User::find(rand(1,2));
+    $user = Auth::user() ? Auth::user() : User::find(rand(1, 2));
     dump($user->notifications->toArray());
 
     $text = 'THIS IS INPUT TEXT';
@@ -85,12 +114,12 @@ Route::get('/mailable', function () {
 });
 
 Route::get('/test', function (
-    Request $request,
-    JpClient $jpClient,
-    Container $container,
-    JpFacade $jp,
+    Request               $request,
+    JpClient              $jpClient,
+    Container             $container,
+    JpFacade              $jp,
     ClientWithoutProvider $clientWithoutProvider,
-    PodcastProcessed $podcastProcessedEvent
+    PodcastProcessed      $podcastProcessedEvent
 ) {
 
     Mail::to('janusz.szymanski1@mailinator.com')->send(new OrderShipped('some random text'));
